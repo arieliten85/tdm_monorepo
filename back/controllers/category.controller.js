@@ -1,9 +1,9 @@
-const FavoritesService = require("../services/favorites.service");
+const CategoryService = require("../services/category.service");
 
-class FavoritesController {
+class CategoryController {
   static async findAll(req, res) {
     try {
-      const { error, data } = await FavoritesService.findAll();
+      const { error, data } = await CategoryService.findAll();
       if (error) {
         return res.status(400).send(data);
       }
@@ -15,7 +15,7 @@ class FavoritesController {
   }
   static async create(req, res) {
     try {
-      const { error, data } = await FavoritesService.create(req.body);
+      const { error, data } = await CategoryService.create(req.body);
       if (error) {
         return res.status(400).send(data);
       }
@@ -27,7 +27,7 @@ class FavoritesController {
   }
   static async findOne(req, res) {
     try {
-      const { error, data } = await FavoritesService.findOne(req.params.id);
+      const { error, data } = await CategoryService.findOne(req.params.id);
       if (error) {
         return res.status(400).send(data);
       }
@@ -37,9 +37,25 @@ class FavoritesController {
       res.status(500).send("Internal server error");
     }
   }
+
+  static async update(req, res) {
+    try {
+      const { error, data } = await CategoryService.update(
+        req.params.id,
+        req.body
+      );
+      if (error) {
+        return res.status(400).send(data);
+      }
+      res.status(201).send(data);
+    } catch (err) {
+      console.error("Unexpected error in update controller:", err);
+      res.status(500).send("Internal server error");
+    }
+  }
   static async deleteOne(req, res) {
     try {
-      const { error, data } = await FavoritesService.deleteOne(req.params.id);
+      const { error, data } = await CategoryService.deleteOne(req.params.id);
       if (error) {
         return res.status(400).send(data);
       }
@@ -51,4 +67,4 @@ class FavoritesController {
   }
 }
 
-module.exports = FavoritesController;
+module.exports = CategoryController;

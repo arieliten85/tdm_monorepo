@@ -1,4 +1,3 @@
-const Favorite = require("./Favorite");
 const Product = require("./Product");
 const Category = require("./Category");
 const Image = require("./Image");
@@ -13,7 +12,6 @@ Image.belongsTo(Product, { foreignKey: "productId" });
 
 //Exports
 module.exports = {
-  Favorite,
   Product,
   Category,
   Image,

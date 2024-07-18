@@ -1,81 +1,140 @@
-// const { Favorite } = require("../models");
+const { Product } = require("../models");
+const sequelizeDB = require("../config/db");
+class ProductServices {
+  static async findAll() {
+    try {
+      const products = await Product.findAll();
+      return { error: false, data: products };
+    } catch (error) {
+      console.error("Error to findAll:", error);
+      return {
+        error: true,
+        data: "Failed to found product",
+      };
+    }
+  }
 
-// class favoritesServices {
-//   static async findAll() {
-//     try {
-//       const favorites = await Favorite.findAll();
-//       return { error: false, data: favorites };
-//     } catch (error) {
-//       console.error("Error to findAll:", error);
-//       return {
-//         error: true,
-//         data: "Failed to found favorite",
-//       };
-//     }
-//   }
-//   static async create(body) {
-//     const { title, description, price } = body;
+  static async create(body) {
+    const { title, description, price, tags, categoryId } = body;
 
-//     // Validación de datos de entrada
-//     if (!title || !description || !price) {
-//       return {
-//         error: true,
-//         data: "Invalid input data",
-//       };
-//     }
+    // Validación de datos de entrada
+    if (!title || !description || !price || !tags || !categoryId) {
+      return {
+        error: true,
+        data: "Invalid input data",
+      };
+    }
 
-//     try {
-//       const newFavorite = await Favorite.create({ title, description, price });
-//       return { error: false, data: newFavorite };
-//     } catch (error) {
-//       console.error("Error to create:", error);
-//       return {
-//         error: true,
-//         data: "Failed to create favorite",
-//       };
-//     }
-//   }
-//   static async findOne(id) {
-//     try {
-//       const favorite = await Favorite.findByPk(id);
-//       if (!favorite) {
-//         return {
-//           error: true,
-//           data: { message: "Favorite not found" },
-//         };
-//       }
-//       return { error: false, data: favorite };
-//     } catch (error) {
-//       console.error("Error finding favorite by ID:", error);
-//       return {
-//         error: true,
-//         data: { message: "Failed to find favorite" },
-//       };
-//     }
-//   }
-//   static async deleteOne(id) {
-//     try {
-//       const { data } = await this.findOne(id);
+    const transaction = await sequelizeDB.transaction();
 
-//       if (!data) {
-//         return {
-//           error: true,
-//           data: { message: "Favorite not found" },
-//         };
-//       }
-//       await Favorite.destroy({ where: { id: data.id } });
-//       return {
-//         error: false,
-//         data: { message: "Favorite deleted successfully" },
-//       };
-//     } catch (error) {
-//       console.error("Error deleting favorite:", error);
-//       return {
-//         error: true,
-//         data: { message: "Failed to delete favorite" },
-//       };
-//     }
-//   }
-// }
+    try {
+      // Buscar el producto basado solo en el título
+      const [newProduct, created] = await Product.findOrCreate({
+        where: { title },
+        defaults: {
+          title,
+          description,
+          price,
+          tags,
+          categoryId,
+        },
+        transaction,
+      });
 
-// module.exports = favoritesServices;
+      if (created) {
+        await transaction.commit();
+        return { error: false, data: newProduct };
+      } else {
+        await transaction.rollback();
+        return { error: true, data: "Product already exists with this title" };
+      }
+    } catch (error) {
+      await transaction.rollback();
+      console.error("Error to create:", error);
+      return {
+        error: true,
+        data: "Failed to create product",
+      };
+    }
+  }
+
+  static async findOne(id) {
+    try {
+      const product = await Product.findByPk(id);
+      if (!product) {
+        return {
+          error: true,
+          data: { message: "product not found" },
+        };
+      }
+      return { error: false, data: product };
+    } catch (error) {
+      console.error("Error finding product by ID:", error);
+      return {
+        error: true,
+        data: { message: "Failed to find product" },
+      };
+    }
+  }
+
+  static async update(id, updateData) {
+    const transaction = await sequelizeDB.transaction();
+
+    try {
+      const product = await Product.findByPk(id);
+      if (!product) {
+        await transaction.rollback();
+        return {
+          error: true,
+          data: { message: "product not found" },
+        };
+      }
+
+      // Actualizar el producto con los datos proporcionados
+      const updatedProduct = await product.update(updateData, { transaction });
+
+      await transaction.commit();
+      return { error: false, data: updatedProduct };
+    } catch (error) {
+      await transaction.rollback();
+      console.error("Error update product by ID:", error);
+      return {
+        error: true,
+        data: { message: "Failed to update product" },
+      };
+    }
+  }
+
+  static async deleteOne(id) {
+    const transaction = await sequelizeDB.transaction();
+
+    try {
+      const { data } = await this.findOne(id);
+
+      if (!data) {
+        await transaction.rollback();
+        return {
+          error: true,
+          data: { message: "Product not found" },
+        };
+      }
+
+      await Product.destroy({ where: { id: data.id }, transaction });
+
+      await transaction.commit();
+      return {
+        error: false,
+        data: { message: "Product deleted successfully" },
+      };
+    } catch (error) {
+      await transaction.rollback();
+      console.error("Error deleting product:", error);
+      return {
+        error: true,
+        data: { message: "Failed to delete product" },
+      };
+    }
+  }
+}
+
+module.exports = ProductServices;
