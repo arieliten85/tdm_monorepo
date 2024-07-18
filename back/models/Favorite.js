@@ -1,12 +1,11 @@
 const { DataTypes, Model } = require("sequelize");
-
-const connection = require("../db");
+const sequelize = require("../config/db");
 
 class Favorite extends Model {}
 
 Favorite.init(
   {
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -18,10 +17,11 @@ Favorite.init(
     },
   },
   {
-    connection,
+    sequelize,
     modelName: "Favorite",
+    tableName: "favorites",
+    timestamps: true,
   }
 );
 
-// the defined model is the class itself
-console.log(Favorite === sequelize.models.Favorite); // true
+module.exports = Favorite;

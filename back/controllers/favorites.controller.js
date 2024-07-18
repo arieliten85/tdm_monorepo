@@ -1,11 +1,54 @@
-const favoritesServices = require("../services/favorites.service");
+const FavoritesService = require("../services/favorites.service");
 
-class favoritesController {
-  static async get(req, res) {
-    const response = await favoritesServices.get();
-
-    res.status(200).send(response);
+class FavoritesController {
+  static async findAll(req, res) {
+    try {
+      const { error, data } = await FavoritesService.findAll();
+      if (error) {
+        return res.status(400).send(data);
+      }
+      res.status(201).send(data);
+    } catch (err) {
+      console.error("Unexpected error in findAll controller:", err);
+      res.status(500).send("Internal server error");
+    }
+  }
+  static async create(req, res) {
+    try {
+      const { error, data } = await FavoritesService.create(req.body);
+      if (error) {
+        return res.status(400).send(data);
+      }
+      res.status(201).send(data);
+    } catch (err) {
+      console.error("Unexpected error in create controller:", err);
+      res.status(500).send("Internal server error");
+    }
+  }
+  static async findOne(req, res) {
+    try {
+      const { error, data } = await FavoritesService.findOne(req.params.id);
+      if (error) {
+        return res.status(400).send(data);
+      }
+      res.status(201).send(data);
+    } catch (err) {
+      console.error("Unexpected error in findByPk controller:", err);
+      res.status(500).send("Internal server error");
+    }
+  }
+  static async deleteOne(req, res) {
+    try {
+      const { error, data } = await FavoritesService.deleteOne(req.params.id);
+      if (error) {
+        return res.status(400).send(data);
+      }
+      res.status(201).send(data);
+    } catch (err) {
+      console.error("Unexpected error in deleteOne controller:", err);
+      res.status(500).send("Internal server error");
+    }
   }
 }
 
-module.exports = favoritesController;
+module.exports = FavoritesController;

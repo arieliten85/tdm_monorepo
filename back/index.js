@@ -1,21 +1,30 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const loadInitialData = require("./data/loadInitialData");
 
 const db = require("./config/db");
 router = require("./routes/index");
 
+// Middleware
+app.use(express.json());
 app.use("/api", router);
 
 const PORT = process.env.PORT || 3000;
 
-db.authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+const startServer = async () => {
+  try {
+    await db.sync({ force: true }).then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
     });
-  })
-  .catch(() => {
-    console.error("Unable to connect to the database:", error);
-  });
+
+    //Carga productos
+    await loadInitialData();
+  } catch (error) {
+    console.error("Error al iniciar el servidor:", error);
+  }
+};
+// Iniciar el servidor
+startServer();

@@ -1,7 +1,0 @@
-const express = require("express");
-const router = express.Router();
-const favoritesController = require("../controllers/favorites.controller");
-
-router.get("/", favoritesController.get);
-
-module.exports = router;
