@@ -135,11 +135,13 @@ import { Breadcrumb } from '../components/breadcrumbs/Breadcrumbs';
 import ProductsList from '../components/ProductList/ProductList';
 import { ProductFilter } from '../components/filter/Filter';
 import { ApiProductoProps } from '../types/types';
-import { getProductByCategory } from '../hook/useGetProducts';
+import { useGetProducts } from '../hook/useGetProducts';
 
 import { useFilterProductContext } from '../context/FilterProductsProvider';
 
 export const ProductosPage = () => {
+  const { getProductByCategory } = useGetProducts();
+
   //HOOKS
   const navigate = useNavigate();
   const { categoria } = useParams();
@@ -166,6 +168,8 @@ export const ProductosPage = () => {
 
     setIsLoading(false);
     setProductsFilterd(filteredProducts);
+
+    console.log('productsFilterd, ', productsFilterd);
 
     return () => {
       // Limpiar filtros al desmontar el componente

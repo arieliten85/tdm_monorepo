@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ApiProductoProps } from '../../../../types/types';
 import '../cardList.scss';
 import { Link } from 'react-router-dom';
@@ -10,10 +10,12 @@ export function CardItem(props: ApiProductoProps) {
   const { status } = useProductsContext();
   const [imageLoading, setImageLoading] = useState(true);
 
+  //console.log('CardItem', props);
+
   useEffect(() => {
     if (props.image) {
       const imageElement = new Image();
-      imageElement.src = props.image;
+      imageElement.src = props.image[0].url;
       imageElement.onload = () => setImageLoading(false);
       imageElement.onerror = () => setImageLoading(false);
     }
@@ -28,11 +30,7 @@ export function CardItem(props: ApiProductoProps) {
               <Spinner animation="border" />
             </div>
           ) : (
-            <img
-              src={props.image || noDataImage} // fallback to noDataImage if props.image is undefined
-              className="card__image"
-              alt="Card"
-            />
+            <img src={props.image[0].url || noDataImage} className="card__image" alt="Card" />
           )}
           {/* Mostrar una imagen alternativa en caso de error y status === 'error' */}
           {status === 'error' && !imageLoading && (

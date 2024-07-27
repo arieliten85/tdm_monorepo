@@ -1,9 +1,21 @@
-const { Product } = require("../models");
+const { Product, Image, Category } = require("../models");
 const sequelizeDB = require("../config/db");
 class ProductServices {
   static async findAll() {
     try {
-      const products = await Product.findAll();
+      const products = await Product.findAll({
+        include: [
+          {
+            model: Image,
+            as: "image",
+          },
+          {
+            model: Category,
+            as: "category",
+          },
+        ],
+      });
+
       return { error: false, data: products };
     } catch (error) {
       console.error("Error to findAll:", error);

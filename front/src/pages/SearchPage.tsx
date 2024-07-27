@@ -5,10 +5,11 @@ import { Breadcrumb } from '../components/breadcrumbs/Breadcrumbs';
 import { useProductsContext } from '../context/ProductProvider';
 import { useGetParamsLocation } from '../hook/useGetParamsLocation';
 import { useEffect, useState } from 'react';
-import { getProductByTitle } from '../hook/useGetProducts';
+import { useGetProducts } from '../hook/useGetProducts';
 import { ApiProductoProps } from '../types/types';
 
 export const SearchPage = () => {
+  const { getProductByTitle } = useGetProducts();
   const { status, products, errorMessage } = useProductsContext();
   const [productsFilterd, setProductsFilterd] = useState<ApiProductoProps[]>([]);
   const { valueTextParamas } = useGetParamsLocation();

@@ -7,14 +7,27 @@
 //   tags?: string[];
 // }
 
+interface Image {
+  id: number;
+  productId: number;
+  url: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ApiProductoProps {
   id: string | number;
-  image: string;
+  image: Image[];
   title: string;
   description: string;
   price: string;
   tags?: string[];
-  category?: string;
+  category?: Category;
   optionalImages?: { image: string }[];
 }
 

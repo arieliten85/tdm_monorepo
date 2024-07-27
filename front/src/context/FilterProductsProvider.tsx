@@ -8,11 +8,7 @@ import React, {
   SetStateAction,
 } from 'react';
 import { ApiProductoProps } from '../types/types';
-import {
-  getProductByAscending,
-  getProductByDescending,
-  getProductByRangePrice,
-} from '../hook/useGetProducts';
+import { useGetProducts } from '../hook/useGetProducts';
 import { useProductsContext } from './ProductProvider';
 import { useGetParamsLocation } from '../hook/useGetParamsLocation';
 
@@ -35,6 +31,8 @@ export const FilterProductsContext = createContext<FilterProductsContextType>({
 });
 
 export const FilterProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { getProductByRangePrice, getProductByDescending, getProductByAscending } =
+    useGetProducts();
   //HOOKS
   const { sort_byParamas, minPriceParamas, maxPriceParamas, searchParams } = useGetParamsLocation();
 

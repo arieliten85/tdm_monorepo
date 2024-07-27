@@ -1,6 +1,6 @@
-import "./cardList.scss";
-import { ApiProductoProps } from "../../../types/types";
-import { CardItem } from "./cardItem/CardItem";
+import './cardList.scss';
+import { ApiProductoProps } from '../../../types/types';
+import { CardItem } from './cardItem/CardItem';
 
 interface ApiProductos {
   productos: ApiProductoProps[];
@@ -10,7 +10,7 @@ export function CardList({ productos }: ApiProductos) {
   return (
     <>
       <div className="wrapper">
-        {productos.map((producto) => (
+        {productos.map(producto => (
           <div key={producto.id}>
             <CardItem
               id={producto.id}

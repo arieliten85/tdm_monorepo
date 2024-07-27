@@ -4,7 +4,11 @@ require("dotenv").config();
 const loadInitialData = require("./data/loadInitialData");
 
 const db = require("./config/db");
-router = require("./routes/index");
+const router = require("./routes/index");
+var cors = require("cors");
+
+// Configura CORS
+app.use(cors());
 
 // Middleware
 app.use(express.json());
