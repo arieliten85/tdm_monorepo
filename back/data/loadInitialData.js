@@ -1,129 +1,55 @@
-const { Favorite } = require("../models");
-const sequelizeDB = require("../config/db"); // Asumiendo que tienes un archivo de configuración de DB
+const { Product, Category, Image } = require("../models");
+const sequelizeDB = require("../config/db");
+const categoryData = require("./apis/category");
+const initialProductData = require("./apis/initialProductData");
 
-class favoritesServices {
-  static async findAll() {
-    try {
-      const favorites = await Favorite.findAll();
-      return { error: false, data: favorites };
-    } catch (error) {
-      console.error("Error to findAll:", error);
-      return {
-        error: true,
-        data: "Failed to find favorites",
-      };
-    }
-  }
+const loadInitialData = async () => {
+  const transaction = await sequelizeDB.transaction();
 
-  static async create(body) {
-    const { title, description, price } = body;
+  try {
+    // CREATE CATEGORIES
+    const createdCategories = await Category.bulkCreate(
+      categoryData.map((category) => ({
+        name: category.name,
+      })),
+      { transaction }
+    ); // Map category names to their ids
+    const categoryMap = createdCategories.reduce((map, category) => {
+      map[category.name] = category.id;
 
-    // Validación de datos de entrada
-    if (!title || !description || !price) {
-      return {
-        error: true,
-        data: "Invalid input data",
-      };
-    }
+      return map;
+    }, {});
 
-    const transaction = await sequelizeDB.transaction();
+    // CREATE PRODUCTS AND IMAGES
 
-    try {
-      const newFavorite = await Favorite.create(
-        { title, description, price },
+    for (const productItem of initialProductData) {
+      const categoryId = categoryMap[productItem.categoryName];
+
+      if (!categoryId) {
+        throw new Error(`Category "${productItem.categoryName}" not found.`);
+      }
+
+      const newProduct = await Product.create(
+        { ...productItem, categoryId },
         { transaction }
       );
-      await transaction.commit();
-      return { error: false, data: newFavorite };
-    } catch (error) {
-      await transaction.rollback();
-      console.error("Error to create:", error);
-      return {
-        error: true,
-        data: "Failed to create favorite",
-      };
+
+      const productId = newProduct.id;
+
+      // CREATE IMAGES
+
+      const imageRecords = productItem.images.map((imagesItem) => ({
+        productId,
+        url: imagesItem.url,
+      }));
+      await Image.bulkCreate(imageRecords, { transaction });
     }
+    await transaction.commit();
+    console.log("Initial data loaded successfully.");
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Error loading initial data:", error);
   }
+};
 
-  static async findOne(id) {
-    try {
-      const favorite = await Favorite.findByPk(id);
-      if (!favorite) {
-        return {
-          error: true,
-          data: { message: "Favorite not found" },
-        };
-      }
-      return { error: false, data: favorite };
-    } catch (error) {
-      console.error("Error finding favorite by ID:", error);
-      return {
-        error: true,
-        data: { message: "Failed to find favorite" },
-      };
-    }
-  }
-
-  static async update(id, updateData) {
-    const transaction = await sequelizeDB.transaction();
-
-    try {
-      const favorite = await Favorite.findByPk(id);
-      if (!favorite) {
-        await transaction.rollback();
-        return {
-          error: true,
-          data: { message: "Favorite not found" },
-        };
-      }
-
-      // Actualizar el favorito con los datos proporcionados
-      const updatedFavorite = await favorite.update(updateData, {
-        transaction,
-      });
-
-      await transaction.commit();
-      return { error: false, data: updatedFavorite };
-    } catch (error) {
-      await transaction.rollback();
-      console.error("Error updating favorite by ID:", error);
-      return {
-        error: true,
-        data: { message: "Failed to update favorite" },
-      };
-    }
-  }
-
-  static async deleteOne(id) {
-    const transaction = await sequelizeDB.transaction();
-
-    try {
-      const { data } = await this.findOne(id);
-
-      if (!data) {
-        await transaction.rollback();
-        return {
-          error: true,
-          data: { message: "Favorite not found" },
-        };
-      }
-
-      await Favorite.destroy({ where: { id: data.id }, transaction });
-
-      await transaction.commit();
-      return {
-        error: false,
-        data: { message: "Favorite deleted successfully" },
-      };
-    } catch (error) {
-      await transaction.rollback();
-      console.error("Error deleting favorite:", error);
-      return {
-        error: true,
-        data: { message: "Failed to delete favorite" },
-      };
-    }
-  }
-}
-
-module.exports = favoritesServices;
+module.exports = loadInitialData;
