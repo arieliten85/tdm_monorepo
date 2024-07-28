@@ -8,7 +8,6 @@ import { Navigation } from './components/navigation/Navigation';
 import { Nosotros } from './components/nosotros/Nosotros';
 import { Footer } from './components/footer/Footer';
 import { HowBuy } from './components/howBuy/HowBuy';
-import { Gallery } from './components/galery/Gallery';
 
 import { DetailsContainer } from './components/details/detailsContainer/DetailsContainer';
 import { ProductosPage } from './pages/ProductosPage';
@@ -25,7 +24,6 @@ export function App() {
           <Route path="/:categoria" element={<ProductosPage />} />
           <Route path="/productos/:title" element={<DetailsContainer />} />
 
-          <Route path="/galeria" element={<Gallery />} />
           <Route path="/comoComprar" element={<HowBuy />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/search" element={<SearchPage />} />

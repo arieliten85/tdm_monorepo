@@ -9,7 +9,7 @@ import { faFacebook, faInstagram, faWhatsapp } from '@fortawesome/free-brands-sv
 import { Button } from 'react-bootstrap';
 import { faCreditCard, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { formatPrice } from '../../../components/utils/formatPrice ';
-import { phoneNumber } from '../../../api/whatapp';
+import { phoneNumber } from '../../../api/whatsapp';
 
 import { Counter } from '../../../components/counter/Counter';
 import { Breadcrumb } from '../../../components/breadcrumbs/Breadcrumbs';
