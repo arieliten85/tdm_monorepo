@@ -4,14 +4,17 @@ class ProductServices {
   static async findAll() {
     try {
       const products = await Product.findAll({
+        attributes: { exclude: ["categoryId"] },
         include: [
           {
             model: Image,
             as: "image",
+            attributes: ["url"],
           },
           {
             model: Category,
             as: "category",
+            attributes: ["name"],
           },
         ],
       });

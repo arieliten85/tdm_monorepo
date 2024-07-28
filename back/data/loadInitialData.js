@@ -20,7 +20,7 @@ const loadInitialData = async () => {
       return map;
     }, {});
 
-    // CREATE PRODUCTS AND IMAGES
+    // CREATE PRODUCTS
 
     for (const productItem of initialProductData) {
       const categoryId = categoryMap[productItem.categoryName];
