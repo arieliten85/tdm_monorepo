@@ -25,12 +25,14 @@ export const DetailsContainer = () => {
     title: '',
     price: '',
     description: '',
-    image: '',
+    image: [],
   });
 
   const [showFullImage, setShowFullImage] = useState(false);
 
   const { products: allProducts } = useProductsContext();
+
+  console.log('DetailsContainer', allProducts);
 
   useEffect(() => {
     if (allProducts && title) {
@@ -78,7 +80,7 @@ Por favor, ¿podrías confirmarme si hay stock?
       <Breadcrumb />
       <div className="card-detail">
         <div className="container-image" onClick={handleIconClick}>
-          <img src={producto.image} className={showFullImage ? 'full-image' : ''} />
+          <img src={producto.image[0]?.url} className={showFullImage ? 'full-image' : ''} />
           <FaEye className="eye-icon" />
         </div>
         <div className="container-info">
@@ -151,7 +153,7 @@ Por favor, ¿podrías confirmarme si hay stock?
         {showFullImage && (
           <div className="modal" onClick={handleIconClick}>
             <FaTimes className="close-icon" onClick={handleIconClick} />
-            <img src={producto.image} className="modal-image" />
+            <img src={producto.image[0]?.url} className="modal-image" />
           </div>
         )}
       </div>

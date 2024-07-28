@@ -46,7 +46,7 @@ export interface CounterProps {
 }
 
 export interface buyProductProps {
-  image: string;
+  image: Image[];
   title: string;
   description: string;
   price: string;
