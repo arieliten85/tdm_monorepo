@@ -7,7 +7,7 @@ export const Breadcrumb: React.FC = () => {
   const pathnames = location.pathname.split('/').filter(x => x);
 
   return (
-    <nav className="breadcrumb pt-4">
+    <nav className="breadcrumb pt-4 ">
       <ul>
         <li>
           <Link to="/">Inicio</Link>

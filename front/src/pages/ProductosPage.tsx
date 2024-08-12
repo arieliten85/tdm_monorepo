@@ -63,7 +63,7 @@ export const ProductosPage = () => {
 
   return (
     <div className="productos-home">
-      <div className="w-100 d-flex flex-column justify-content-center align-items-center">
+      <div className="w-100 d-flex flex-column justify-content-center align-items-center ">
         <TitleCategory title="Productos" />
         <Breadcrumb />
         <div className="productos-home">

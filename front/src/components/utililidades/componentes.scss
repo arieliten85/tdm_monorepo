@@ -17,7 +17,7 @@
   font-size: 1.2rem;
   text-transform: uppercase;
   font-weight: bold;
-  font-family: "Borel", cursive;
+  font-family: 'Borel', cursive;
 
   z-index: 0;
   text-align: center;
@@ -36,7 +36,7 @@
   .title-category-container {
     width: 60%;
 
-    margin-bottom: 1rem;
+    margin: 2rem !important;
   }
   .title-category-container h1 {
     top: -6px;

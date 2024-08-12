@@ -38,7 +38,7 @@ interface TitleCategory {
 export const TitleCategory = ({ title }: TitleCategory) => {
   return (
     <>
-      <div className="title-category-container m-3">
+      <div className="title-category-container">
         <div className="line"></div>
         <h1>{title}</h1>
       </div>
